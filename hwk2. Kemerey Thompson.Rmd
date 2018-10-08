@@ -1,0 +1,1076 @@
+---
+title: "FIN 5350- Homework 2"
+author: "Kemerey Thompson"
+date: "October 8, 2018"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+
+## Numerical Problems
+
+Please complete the following numerical problems by hand (or in a Rmd document like this one). 
+
+<br>
+
+##### __Problem 1__
+ 
+Let $S = \$100$, $K = \$105$, $r = 8\%$, $T = 0.5$, and $\delta = 0.0$. Let $u = 1.3$, $d = 0.8$, and $n = 1$.
+
+<br>
+
+\begin{itemize}
+ \item[\textbf{a.}] What are the premium, $\Delta$, and $B$ for a European call?
+ \item[\textbf{b.}] What are the premium, $\Delta$, and $B$ for a European put?
+\end{itemize}
+
+#A. Call
+```{r, echo=FALSE}
+s <- 100
+k <- 105
+r <- .08
+t <- .5
+l <- 0.0
+u <- 1.3
+d <- 0.8
+n <- 1
+h <- t/n 
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Sd <- s*d
+Cd<- max(Sd-k,0)
+Cu<- max(Su-k, 0)
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- exp(-r*h)*((pstar*Cu)+(1-pstar)*Cd)
+print(Delta)
+print(B)
+print(Prem)
+```
+\ $Delta = .5$
+\ $B = -38.4315$
+\ $Premium = 11.57$
+
+#B. Put
+```{r, echo=FALSE}
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Sd <- s*d
+Cd<- max(k-Sd,0)
+Cu<- max(k-Su, 0)
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- exp(-r*h)*((pstar*Cu)+(1-pstar)*Cd)
+print(Delta)
+print(B)
+print(Prem)
+```
+\ $Delta = -.5$
+\ $B = 62.4513$
+\ $Premium = 12.45$
+<br>
+<br>
+
+##### __Problem 2__
+
+Let $S = \$100$, $K = \$95$, $r = 8\%$, $T = 0.5$, and $\delta = 0.0$. Let $u = 1.3$, $d = 0.8$, and $n = 1$.
+
+<br>
+
+\begin{itemize}
+ \item[\textbf{a.}] Verify that the price of a European put is $\$7.471$.
+ \item[\textbf{b.}] Suppose you observe a call price of $\$17$. What is the arbitrage?
+ \item[\textbf{c.}] Suppose you observe a call price of $\$15.50$. What is the arbitrage?
+\end{itemize}
+#a
+```{r, echo=FALSE}
+s <- 100
+k <- 95
+r <- .08
+t <- .5
+l <- 0.0
+u <- 1.3
+d <- .8
+n <- 1
+h <- t/n
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Sd <- s*d
+Cd<- max(k-Sd,0)
+Cu<- max(k-Su, 0)
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- exp(-r*h)*((pstar*Cu)+(1-pstar)*Cd)
+print(Prem)
+```
+\ The premium does equal 7.47.
+
+#b
+```{r, echo=FALSE}
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Sd <- s*d
+Cd<- max(Sd-k,0)
+Cu<- max(Su-k, 0)
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- exp(-r*h)*((pstar*Cu)+(1-pstar)*Cd)
+print(Delta)
+print(B)
+print(Prem)
+```
+\ The theoretical value of the call is 16.1957 which is less than the price of 17. You should sell the call option, buy .7 units of the stock, and borrow 52.8042 dollars to create a synthetic call. This arbitrage position will profit the difference of 0.8043.
+
+#c
+\ You would want to buy the call because it is undervalued. Then sell .7 unites of a share and lend 53.8042. The arbitrage profit is 0.696. 
+<br>
+<br>
+
+##### __Problem 3__
+
+Let $S = \$100$, $K = \$95$, $\sigma = 30\%$, $r = 8\%$, $T = 1$, and $\delta = 0.0$. Let $u = 1.3$, $d = 0.8$, and $n = 2$. Construct the binomial tree for a call option. At each node provide the premium, $\Delta$, and $B$.
+
+```{r, echo=FALSE}
+s <- 100
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+u <- 1.3
+d <- .8
+n <- 2
+h <- t/n
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Sdu <- Sud
+Cuu<- max(Suu-k, 0)
+Cud<- max(Sud-k, 0)
+Cdd<- max(Sdd-k,0)
+Cdu<- max(Sdu-k,0)
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- Delta * s + B
+print("Delta_u, Bu, Premium_u")
+print(Delta_u)
+print(Bu)
+print(Cu)
+print("Delta_d, Bd, Premium_d")
+print(Delta_d)
+print(Bd)
+print(Cd)
+print("Delta, B, Premium")
+print(Delta)
+print(B)
+print(Prem)
+
+CallTree<-mat.or.vec(3,3)
+CallTree[1,1] <- Prem
+CallTree[1,2] <- Cu
+CallTree[1,3] <- Cuu
+CallTree[2,1] <- 0
+CallTree[2,2] <- Cd
+CallTree[2,3] <- Cud
+CallTree[3,1] <- 0
+CallTree[3,2] <- 0
+CallTree[3,3] <- Cdd
+print(CallTree[])
+
+```
+<br>
+<br>
+
+##### __Problem 4__
+
+Repeat the option price calculation in the previous question for stock prices of $\$80$, $\$90$, $\$110$,
+$\$120$, and $\$130$, but now let $n = 3$. Keep everyting else fixed. What happens to the initial option
+$\Delta$ as the stock price increases?
+
+#Stock price of 80
+```{r, echo=FALSE}
+s <- 80
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+u <- 1.3
+d <- .8
+n <- 3
+h <- t/n
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- Delta * s + B
+print("Delta_uu, Buu, Premium_uu")
+print(Delta_uu)
+print(Buu)
+print(Cuu)
+print("Delta_dd, Bdd, Premium_dd")
+print(Delta_dd)
+print(Bdd)
+print(Cdd)
+print("Delta_ud, Bud, Premium_ud")
+print(Delta_ud)
+print(Bud)
+print(Cud)
+print("Delta_u, Bu, Premium_u")
+print(Delta_u)
+print(Bu)
+print(Cu)
+print("Delta_d, Bd, Premium_d")
+print(Delta_d)
+print(Bd)
+print(Cd)
+print("Delta, B, Premium")
+print(Delta)
+print(B)
+print(Prem)
+```
+#Stock price of 90
+```{r, echo=FALSE}
+s <- 90
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+u <- 1.3
+d <- .8
+n <- 3
+h <- t/n
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- Delta * s + B
+print("Delta_uu, Buu, Premium_uu")
+print(Delta_uu)
+print(Buu)
+print(Cuu)
+print("Delta_dd, Bdd, Premium_dd")
+print(Delta_dd)
+print(Bdd)
+print(Cdd)
+print("Delta_ud, Bud, Premium_ud")
+print(Delta_ud)
+print(Bud)
+print(Cud)
+print("Delta_u, Bu, Premium_u")
+print(Delta_u)
+print(Bu)
+print(Cu)
+print("Delta_d, Bd, Premium_d")
+print(Delta_d)
+print(Bd)
+print(Cd)
+print("Delta, B, Premium")
+print(Delta)
+print(B)
+print(Prem)
+```
+#Stock price of 110
+```{r, echo=FALSE}
+s <- 110
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+u <- 1.3
+d <- .8
+n <- 3
+h <- t/n
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- Delta * s + B
+print("Delta_uu, Buu, Premium_uu")
+print(Delta_uu)
+print(Buu)
+print(Cuu)
+print("Delta_dd, Bdd, Premium_dd")
+print(Delta_dd)
+print(Bdd)
+print(Cdd)
+print("Delta_ud, Bud, Premium_ud")
+print(Delta_ud)
+print(Bud)
+print(Cud)
+print("Delta_u, Bu, Premium_u")
+print(Delta_u)
+print(Bu)
+print(Cu)
+print("Delta_d, Bd, Premium_d")
+print(Delta_d)
+print(Bd)
+print(Cd)
+print("Delta, B, Premium")
+print(Delta)
+print(B)
+print(Prem)
+```
+#Stock price of 120
+```{r, echo=FALSE}
+s <- 120
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+u <- 1.3
+d <- .8
+n <- 3
+h <- t/n
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- Delta * s + B
+print("Delta_uu, Buu, Premium_uu")
+print(Delta_uu)
+print(Buu)
+print(Cuu)
+print("Delta_dd, Bdd, Premium_dd")
+print(Delta_dd)
+print(Bdd)
+print(Cdd)
+print("Delta_ud, Bud, Premium_ud")
+print(Delta_ud)
+print(Bud)
+print(Cud)
+print("Delta_u, Bu, Premium_u")
+print(Delta_u)
+print(Bu)
+print(Cu)
+print("Delta_d, Bd, Premium_d")
+print(Delta_d)
+print(Bd)
+print(Cd)
+print("Delta, B, Premium")
+print(Delta)
+print(B)
+print(Prem)
+```
+#Stock price of 130
+```{r, echo=FALSE}
+s <- 130
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+u <- 1.3
+d <- .8
+n <- 3
+h <- t/n
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- Delta * s + B
+print("Delta_uu, Buu, Premium_uu")
+print(Delta_uu)
+print(Buu)
+print(Cuu)
+print("Delta_dd, Bdd, Premium_dd")
+print(Delta_dd)
+print(Bdd)
+print(Cdd)
+print("Delta_ud, Bud, Premium_ud")
+print(Delta_ud)
+print(Bud)
+print(Cud)
+print("Delta_u, Bu, Premium_u")
+print(Delta_u)
+print(Bu)
+print(Cu)
+print("Delta_d, Bd, Premium_d")
+print(Delta_d)
+print(Bd)
+print(Cd)
+print("Delta, B, Premium")
+print(Delta)
+print(B)
+print(Prem)
+```
+\begin{itemize}
+ \item[\textbf{a.}] As the stock prices increases, delta approaches one.
+\end{itemize}
+<br>
+<br>
+
+##### __Problem 5__
+
+Let $S = \$100$, $K = \$95$, $r = 8\%$ (continuously compounded), $\sigma = 30\%$, $\delta = 0$, and $T = 1$ year and $n = 3$.
+
+\begin{itemize}
+ \item[\textbf{a.}] What is the premium for an American call option? Is there any early exercise? 
+ \item[\textbf{b.}] What is the premium for a European call option? Use the computational shortcut with the
+ risk-neutral binomial pmf that I showed you in class. Compare the American and European premia.
+ \item[\textbf{c.}] What is the premium for a European put? Does put-call parity hold? (see McDonald Chapter 9). Also use the risk-neutral binomial pmf for this problem.  
+ \item[\textbf{d.}] What is the premium of the American put? Compare with the European put. If they differ, explain why.
+\end{itemize}
+#a
+```{r, echo=FALSE}
+s <- 100
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+n <- 3
+sigma <- 0.30
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- max((Suu-k), (Delta_uu * Suu + Buu))
+Cud<- max((Sud-k), (Delta_ud * Sud + Bud))
+Cdd<- max((Sdd-k), (Delta_dd * Sdd + Bdd))
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- max((Su-k), (Delta_u * Su + Bu))
+Cd <- max((Sd-k), (Delta_d * Sd + Bd))
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- Delta * s + B
+print("Premium")
+print(Prem)
+
+
+Payoff_Suu <- Suu-k
+Payoff_Sdd <- Sdd-k
+Payoff_Sud <- Sud-k
+Payoff_Sd <- Sd-k
+Payoff_Su <- Su-k
+
+cat("Payoff_Suu: ", Payoff_Suu, " < Premium_uu: ", Cuu)
+cat("Payoff_Sud: ", Payoff_Sud, " < Premium_ud: ", Cud)
+cat("Payoff_Sdd: ", Payoff_Sdd, " < Premium_dd: ", Cdd)
+cat("Payoff_Su: ", Payoff_Su, " < Premium_u: ", Cu)
+cat("Payoff_Sd: ", Payoff_Sd, " < Premium_d: ", Cd)
+
+```
+\begin{itemize}
+ \item[\textbf{a.}] The option will never be exercised early because the payoff is always less than the premium.   
+\end{itemize}
+
+#b
+#risk neutral binomal pmf????
+```{r, echo=FALSE}
+s <- 100
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+n <- 3
+sigma <- 0.30
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem_call <- Delta * s + B
+print("Premium")
+print(Prem)
+
+
+Payoff_Suu <- Suu-k
+Payoff_Sdd <- Sdd-k
+Payoff_Sud <- Sud-k
+Payoff_Sd <- Sd-k
+Payoff_Su <- Su-k
+
+cat("Payoff_Suu: ", Payoff_Suu, " < Premium_uu: ", Cuu)
+cat("Payoff_Sud: ", Payoff_Sud, " < Premium_ud: ", Cud)
+cat("Payoff_Sdd: ", Payoff_Sdd, " < Premium_dd: ", Cdd)
+cat("Payoff_Su: ", Payoff_Su, " < Premium_u: ", Cu)
+cat("Payoff_Sd: ", Payoff_Sd, " < Premium_d: ", Cd)
+
+```
+
+\begin{itemize}
+ \item[\textbf{a.}] The European call option is priced the same as the American call option, because the option will never be exercised early.  
+\end{itemize}
+
+#c
+```{r, echo=FALSE}
+s <- 100
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+n <- 3
+sigma <- 0.30
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(k-Suud,0)
+Cuuu <- max(k-Suuu,0)
+Cddu <- max(k-Sddu,0)
+Cddd<- max(k-Sddd,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem_put <- Delta * s + B
+print("Premium")
+print(Prem)
+
+
+Payoff_Suu <- Suu-k
+Payoff_Sdd <- Sdd-k
+Payoff_Sud <- Sud-k
+Payoff_Sd <- Sd-k
+Payoff_Su <- Su-k
+
+cat("Payoff_Suu: ", Payoff_Suu, " < Premium_uu: ", Cuu)
+cat("Payoff_Sud: ", Payoff_Sud, " < Premium_ud: ", Cud)
+cat("Payoff_Sdd: ", Payoff_Sdd, " < Premium_dd: ", Cdd)
+cat("Payoff_Su: ", Payoff_Su, " < Premium_u: ", Cu)
+cat("Payoff_Sd: ", Payoff_Sd, " < Premium_d: ", Cd)
+
+cat("Call-Put =", Prem_call-Prem_put)
+cat("PV(Forward-Strike) =", s-k*exp((-r-l)*t))
+
+```
+\begin{itemize}
+ \item[\textbf{a.}] The premium for a European Put is 5.978605.
+ \item[\textbf{b.}] Put-call parity for European options with the same strike price and time to maturity exists because Call - Put = PV(Forward Price - Strike Price). 
+\end{itemize}
+
+#d
+```{r, echo=FALSE}
+s <- 100
+k <- 95
+r <- .08
+t <- 1
+l <- 0.0
+n <- 3
+sigma <- 0.30
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(k-Suud,0)
+Cuuu <- max(k-Suuu,0)
+Cddu <- max(k-Sddu,0)
+Cddd<- max(k-Sddd,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- max((k-Suu), (Delta_uu * Suu + Buu))
+Cud<- max((k-Sud), (Delta_ud * Sud + Bud))
+Cdd<- max((k-Sdd), (Delta_dd * Sdd + Bdd))
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- max((k-Su), (Delta_u * Su + Bu))
+Cd <- max((k-Sd), (Delta_d * Sd + Bd))
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem <- Delta * s + B
+print("Premium")
+print(Prem)
+
+
+Payoff_Suu <- k-Suu
+Payoff_Sdd <- k-Sdd
+Payoff_Sud <- k-Sud
+Payoff_Sd <- k-Sd
+Payoff_Su <- k-Su
+
+cat("Payoff_Suu: ", Payoff_Suu, " < Premium_uu: ", Cuu)
+cat("Payoff_Sud: ", Payoff_Sud, " < Premium_ud: ", Cud)
+cat("Payoff_Sdd: ", Payoff_Sdd, " < Premium_dd: ", Cdd)
+cat("Payoff_Su: ", Payoff_Su, " < Premium_u: ", Cu)
+cat("Payoff_Sd: ", Payoff_Sd, " < Premium_d: ", Cd)
+
+```
+\begin{itemize}
+ \item[\textbf{a.}] The premium of the American Put is 6.677901.  
+ \item[\textbf{b.}] It is more because you would choose to exercise early at dd where the payoff of 20.40352 is equal to the premium of 20.40352.
+\end{itemize}
+
+<br>
+<br>
+
+##### __Problem 6__
+
+Let $S = \$40$, $K = \$40$, $r = 8\%$ (continuously compounded), $\sigma = 30\%$, $\delta = 0.0$, $T = 0.5$ year,
+and $n = 3$.
+
+<br>
+
+\begin{itemize}
+ \item[\textbf{a.}] Construct the binomial tree for the stock. What are $u$ and $d$?
+ \item[\textbf{b.}] Compute the premia of American and European calls and puts.
+\end{itemize}
+
+```{r, echo=FALSE}
+s <- 40
+k <- 40
+r <- .08
+sigma <- 0.30
+l <- 0.0
+t <- 0.5
+n <- 3
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+SpotTree<-mat.or.vec(h+1+n,h++1+n)
+for (i in  1: (h+1+n)){
+       for (j in 1:i){
+    SpotTree[j,i]<-s*u^(i-j)*d^(j-1)}
+}
+
+print(SpotTree[])
+```
+
+\begin{itemize}
+ \item[\textbf{a.}] See spot tree above. U is equal ot 1.145462 and d is equal to 0.8966038.
+ \item[\textbf{b.}] See premiums below.
+\end{itemize}
+
+#American Call
+```{r, echo=FALSE}
+s <- 40
+k <- 40
+r <- .08
+sigma <- 0.30
+l <- 0.0
+t <- 0.5
+n <- 3
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- max((Suu-k), (Delta_uu * Suu + Buu))
+Cud<- max((Sud-k), (Delta_ud * Sud + Bud))
+Cdd<- max((Sdd-k), (Delta_dd * Sdd + Bdd))
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- max((Su-k), (Delta_u * Su + Bu))
+Cd <- max((Sd-k), (Delta_d * Sd + Bd))
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem_American_call <- Delta * s + B
+print("Premium")
+print(Prem_American_call)
+```
+
+#American Put
+```{r, echo=FALSE}
+s <- 40
+k <- 40
+r <- .08
+sigma <- 0.30
+l <- 0.0
+t <- 0.5
+n <- 3
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(k-Suud,0)
+Cuuu <- max(k-Suuu,0)
+Cddu <- max(k-Sddu,0)
+Cddd<- max(k-Sddd,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- max((k-Suu), (Delta_uu * Suu + Buu))
+Cud<- max((k-Sud), (Delta_ud * Sud + Bud))
+Cdd<- max((k-Sdd), (Delta_dd * Sdd + Bdd))
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- max((k-Su), (Delta_u * Su + Bu))
+Cd <- max((k-Sd), (Delta_d * Sd + Bd))
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem_American_Put <- Delta * s + B
+print("Premium")
+print(Prem_American_Put)
+
+
+```
+#European Call
+```{r, echo=FALSE}
+s <- 40
+k <- 40
+r <- .08
+sigma <- 0.30
+l <- 0.0
+t <- 0.5
+n <- 3
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(Suud-k,0)
+Cuuu <- max(Suuu-k,0)
+Cddu <- max(Sddu-k,0)
+Cddd<- max(Sddd-k,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem_European_call <- Delta * s + B
+print("Premium")
+print(Prem_European_call)
+
+
+````
+
+#European Put
+```{r, echo=FALSE}
+s <- 40
+k <- 40
+r <- .08
+sigma <- 0.30
+l <- 0.0
+t <- 0.5
+n <- 3
+h <- t/n
+u <- exp((r-l)*h + (sigma * sqrt(h)))
+d <- exp((r-l)*h - (sigma * sqrt(h)))
+
+pstar <- (exp((r-l)*h)-d)/(u-d)
+Su <- s*u
+Suu <- Su*u
+Sud <- Su*d
+Sd <- s*d
+Sdd <- Sd*d
+Suud <- Sud*u
+Suuu <- Suu*u
+Sddu <- Sdd*u
+Sddd<- Sdd*d
+Cuud <- max(k-Suud,0)
+Cuuu <- max(k-Suuu,0)
+Cddu <- max(k-Sddu,0)
+Cddd<- max(k-Sddd,0)
+Buu <- exp(-r*h)*((u*Cuud-d*Cuuu)/(u-d))
+Bud <- exp(-r*h)*((u*Cddu-d*Cuud)/(u-d))
+Bdd <- exp(-r*h)*((u*Cddd-d*Cddu)/(u-d))
+Delta_uu <- (Cuuu - Cuud)/(Suu*(u-d))
+Delta_ud <- (Cuud - Cddu)/(Sud*(u-d))
+Delta_dd <- (Cddu - Cddd)/(Sdd*(u-d))
+Cuu<- Delta_uu * Suu + Buu
+Cud<- Delta_ud * Sud + Bud
+Cdd<- Delta_dd * Sdd + Bdd
+Bu <- exp(-r*h)*((u*Cud-d*Cuu)/(u-d))
+Bd <- exp(-r*h)*((u*Cdd-d*Cud)/(u-d))
+Delta_u <- (Cuu - Cud)/(Su*(u-d))
+Delta_d <- (Cud - Cdd)/(Sd*(u-d))
+Cu <- Delta_u * Su + Bu
+Cd <- Delta_d * Sd + Bd
+B <- exp(-r*h)*((u*Cd-d*Cu)/(u-d))
+Delta <- (Cu - Cd)/(s*(u-d))
+Prem_European_put <- Delta * s + B
+print("Premium")
+print(Prem_European_put)
+``` 
+
