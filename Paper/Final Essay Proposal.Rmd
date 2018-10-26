@@ -1,0 +1,78 @@
+---
+output: 
+  pdf_document:
+bibliography: citations.bib 
+
+title: "How Should Computation Economists Analyze the Impact of Corporate Lobbying on Liquidity?"
+author: Kemerey Thompson
+abstract: "This paper provides an overview of how computation economists should analyze the impact of firm lobbying on liquidity. There are different measures of liquidity: tightness, immediacy, depth, breadth, and resiliency. The computation methods of these measures are considered. Then the analysis of the impact of lobbying on firms’ equity liquidity is discussed."
+keywords: "Computation, economists, lobbying, liquidity, regression"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 11pt
+spacing: double
+---
+
+
+  
+
+# Introduction
+
+Buchanan believes economists should focus more on cattalactics or symbiotics than on optimal resource allocation. Catallactics is the theory of exchange or the study of why goods and services are priced as they are not as they theoretically should be. The theory of choice requires definitions and rules of the market that predetermine the solution. Buchanan thinks economists shold be aware fo the definitions and limitations they impose on society and focus on exchange more than allocation. @Buchanan1979 I agree with Buchanan that it is important to focus on methodology and any definitions imposed on a study; however, I believe that computational economics should be combined with classic economic theory to find both the theory of exchange and the optimal solution. I use both in this paper about lobbying and liquidity. Liquidity is important to financial markets because it improves resource allocation and informational efficiency. @lybek2002measuring Intense lobbying is correlated with outperforming the market and this paper, as a further analysis, assess the impact on liquidity. @chen2015corporate 
+
+## Subsection 1
+
+Equities are priced at market equilibrium and according to Buchan economists should focus more on why equities are priced as they are instead of what equilibrium should be. @Buchanan1979 Stock liquidity affects price and should be considered as part of this path. However, knowledge is decentralized across society and no individual is omnipotent. Stock prices are a reflection of investors with individual particles of knowledge making decisions, not all-knowing investors making decisions. The pricing and liquidity is affected by this distinction. @Hayek1945 
+
+
+## Subsection 2 
+
+Different liquidity methods are important to consider. Many of the factors of liquidity overlap each other and there are multiple ways to measure each factor. Tightness is the measure of the best bid and best ask and the spread created by the two. The tighter a spread the more liquid the stock. The bid-ask spread is an important method of analyzing liquidity and is most popular method. This should be considered. Immediacy is important as it measures how fast an order is filled, settled, and delivered.  This is the direct measure of a market’s efficiency. This method should also be considered. Depth measures the number of orders at every price in the order book. The more orders that are placed, both sell and buy side, the more liquid a market is. A stock may have a little bid-ask spread but if there are not many orders placed it is not very liquid; however, this situation is unlikely. Breadth accounts for both the depth of orders and tightness of the bid-ask spread. Resiliency measures how fast prices bounce back to equilibrium after some shock happens to the order book.  All these different aspects of liquidity need to be studied when computing the impact of lobbying on stock liquidity.
+ 
+
+# Middle Section
+
+The intensity of firm lobbying can be measured in different ways. It is important to consider the total dollar value the firm contributes to lobbying and how this relates to the overall size of the company. The amount of lobbying will vary over time and it may have an effect(s) that are hard to measure. This could include a lag effect, where the dollar amount of lobbying may improve future gains. Firms in the same industry may benefit from a peer’s lobbying dollars and will skew the results. @chen2015corporate
+
+## Subsection 1
+
+In order to find causality between lobbying and liquidity it is important to control for other aspects of the economy. This could be done by measuring liquidity around shocks to lobbying. The two shocks that could be used are the unlikely passage of the Honest Leadership and Open Government (HLOG) Act and the guilty plea of lobbyist Jack Abramoff. @Blau2018 Then a computational economist should run a regression of different liquidity factors on a modified Foma-French three factor model, with a new variable controlling for number of dollars lobbied. Then test for statistical significance on the lobbying beta at different levels of significance. It would be important to note the probability of a type I error and the probability of a type II error. 
+
+
+# Summary and Conclusion
+
+This paper discussed the methodologies a computation economist should use to test whether firm lobbying affects a firm’s equity’s liquidity. There are different measure of liquidity and it would be best to use all possible measure to examine the effectiveness. To measure the impact of lobbying on liquidity, a regression would be run around two different liquidity shocks. Then the regression of liquidity on lobbying should be tested for robustness and statistical significance.  It is predicted that firms that lobby have greater liquidity, firms that lobby will be negatively impacted by the events tested. 
+
+#Literature Review
+
+## Buchanan 
+Buchanan argues that resource allocation should not be an economists main focus. Resources are maximized by establishing constraints and then solving for an optimal solution. These constraints predetermine the solution. Instead, economists should focus on why things are priced at how they are instead of solving for how they should be priced. 
+@Buchanan1979
+
+## Hayek 
+Hayek brings to light the flaw in economists assuming an individual has all available knowledge. Economists should instead focus on how individuals with partial amounts of knowledge come to the conclusions they do. Knowledge is decentralized across society, however there are different forms or levels of knowledge. Knowledge should be shared but it is not a good assumption that an individual is aware of all available information. 
+@Hayek1945
+
+## Chen
+Firms that intensely lobby outperform the market and their peers. Lobbying is relevant to analyze because more money is spent on lobbying and more firms are engaged in lobbying than donating to political action committees. Other studies have shown that corporate lobbying is positively correlated with firm performance. 
+@chen2015corporate
+
+## Lybek
+There are multiple ways to measure liquidity. Tightness measures transaction costs in the stock market this is the bid-ask spread and any implicit costs. Immediacy measures the speed and efficiency of trading and delivery. Depth measures the number of orders at every price in the order book. Breadth accounts for both the depth of orders and tightness of the bid-ask spread. Resiliency measures how fast prices bounce back to equilibrium after some shock happens to the order book. 
+@lybek2002measuring
+
+## Blau
+This paper was a follow up to findings that lobbying is positively correlated with above market returns. The test was preformed around the signing of the HLOG Act. Stock prices of lobbying firms were negatively affected by 67 to 69 basis points within a three-day period of the signing of this act. Politically active firms were negatively affected by this law. 
+@Blau2018
+
+
+
+# References
+\setlength{\parindent}{-0.2in}
+\setlength{\leftskip}{0.2in}
+\setlength{\parskip}{8pt}
+\vspace*{-0.2in}
+\noindent
+
+
